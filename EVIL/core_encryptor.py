@@ -90,6 +90,8 @@ AUTHOR_INFO = f"""{GREEN}=======================================================
 
 
 def clear_screen():
+    # clear_screen is called very frequently, which can be annoying for users and makes debugging harder.
+    # Only clear the screen when absolutely necessary, or provide a config/flag to disable it.
     command = 'cls' if platform.system().lower() == 'windows' else 'clear'
     os.system(command)
 
@@ -127,6 +129,8 @@ def generate_salt():
     return os.urandom(16)
 
 def derive_key(password: bytes, salt: bytes) -> bytes:
+    # PBKDF2HMAC is good, but Argon2 is more secure for new code.
+    # Use Argon2 for key derivation if available, or allow user to select KDF.
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -164,6 +168,8 @@ def decrypt_message(password: str, encrypted_data_b64: str):
         return None
 
 def encrypt_file(password: str, input_filepath: str, output_filepath: str):
+    # Storing the salt at the start of the file is standard, but not documented anywhere.
+    # Add a comment or docstring explaining the file format for encrypted files.
     try:
         salt = generate_salt()
         key = derive_key(password.encode(), salt)
@@ -210,6 +216,8 @@ def decrypt_file(password: str, input_filepath: str, output_filepath: str):
         return False
 
 def calculate_hash():
+    # The hash calculator is functional, but could use command-line arguments for automation.
+    # Allow passing input and algorithm as arguments for scripting.
     print(f"{MAGENTA}--- Hash Calculator ---{NC}")
     print(f"{YELLOW}[1] Hash Text Input")
     print(f"{YELLOW}[2] Hash File")
@@ -264,6 +272,8 @@ def calculate_hash():
         print(f"{RED}[!] Error during hashing: {e}{NC}")
 
 def generate_password_tool():
+    # The password generator asks a lot of questions, which is good for flexibility, but could be streamlined.
+    # Add a mode for quick generation with defaults, and show password entropy.
      print(f"{MAGENTA}--- Strong Password Generator ---{NC}")
      try:
          length = int(input(f"{CYAN}Enter desired password length (e.g., 16): {NC}"))
@@ -299,6 +309,8 @@ def generate_password_tool():
 
 
 def perform_port_scan():
+    # The port scanner is very basic and slow for large ranges.
+    # Use async sockets or threading for faster scans, and allow saving results to a file.
     print(f"{MAGENTA}--- Basic Port Scanner ---{NC}")
     print(f"{RED}WARNING: Unauthorized scanning is illegal and unethical.{NC}")
     print(f"{YELLOW}Only scan targets you have explicit permission to test.{NC}")
@@ -507,6 +519,8 @@ def get_website_cookies_feature():
 
 
 def encode_decode_data():
+    # Menu is overkill for simple encode/decode tasks.
+    # Allow piping data in/out for scripting, and add more encoding types.
     print(f"{MAGENTA}--- Data Encoder/Decoder ---{NC}")
     print(f"{YELLOW}[1] Base64 Encode")
     print(f"{YELLOW}[2] Base64 Decode")
@@ -551,6 +565,8 @@ def encode_decode_data():
 
 
 def display_system_info():
+    # System info is useful, but could be more concise and allow export to file.
+    # Add option to export info, and show only key details by default.
     print(f"{MAGENTA}--- System Information ---{NC}")
     try:
         print(f"{YELLOW}{'OS Type':<20}:{NC} {platform.system()}")
@@ -581,6 +597,8 @@ def display_system_info():
         print(f"{RED}Error retrieving system info: {e}{NC}")
 
 def list_running_processes():
+    # Listing every process with color is a bit much. Filtering/search would help.
+    # Add filtering by name or user, and allow exporting to file.
     print(f"{MAGENTA}--- Running Processes ---{NC}")
     print(f"{YELLOW}{'PID':<8} {'Username':<15} {'Name'}{NC}")
     print("-" * 40)
@@ -608,6 +626,8 @@ def list_running_processes():
 
 # --- Menu Handlers ---
 def handle_crypto_menu():
+    # Menu system is robust but a bit bloated. Could be refactored into a class or use a CLI framework.
+    # Refactor menus for maintainability and add help/usage examples.
     while True:
         clear_screen()
         display_header()
@@ -755,6 +775,8 @@ def handle_system_menu():
 
 
 def main():
+    # The main loop is clear, but the branding and color everywhere is a bit much.
+    # Tone down the "evil" branding and use color for important messages only.
     while True:
         clear_screen()
         display_header()
@@ -785,13 +807,14 @@ def main():
             pause_and_continue()
 
 if __name__ == "__main__":
+    # Good error handling, but could log errors to a file for debugging.
+    # Add logging of critical errors to a file for troubleshooting.
     try:
         main()
     except KeyboardInterrupt:
         print(f"\n{RED}[!] Operation interrupted by user. Exiting forcefully.{NC}")
         sys.exit(1)
     except Exception as e:
-
         print(f"\n{RED}[!!!] A CRITICAL UNEXPECTED ERROR OCCURRED: {e}{NC}")
         print(f"{RED}       Please report this issue if possible.{NC}")
         sys.exit(1)
